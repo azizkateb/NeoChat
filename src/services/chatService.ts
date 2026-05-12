@@ -61,7 +61,8 @@ export async function sendMessageStream(
     let data = "";
     for (const part of eventParts) {
       if (part.startsWith("data:")) {
-        const line = part.replace(/^data:\s*/, "");
+        const rawLine = part.slice(5);
+        const line = rawLine.startsWith(" ") ? rawLine.slice(1) : rawLine;
         data += data ? `\n${line}` : line;
       }
     }
@@ -77,9 +78,9 @@ export async function sendMessageStream(
     while ((delimiterIndex = buffer.indexOf("\n\n")) !== -1) {
       const rawEvent = buffer.slice(0, delimiterIndex);
       buffer = buffer.slice(delimiterIndex + 2);
-      const data = parseSSE(rawEvent).trim();
+      const data = parseSSE(rawEvent);
 
-      if (data === "[DONE]") {
+      if (data.trim() === "[DONE]") {
         return;
       }
 
@@ -91,8 +92,8 @@ export async function sendMessageStream(
 
   buffer += decoder.decode();
   if (buffer.trim()) {
-    const data = parseSSE(buffer).trim();
-    if (data === "[DONE]") {
+    const data = parseSSE(buffer);
+    if (data.trim() === "[DONE]") {
       return;
     }
     if (data) {
