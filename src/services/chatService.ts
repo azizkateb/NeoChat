@@ -1,5 +1,5 @@
 export async function sendChatMessage(message: string): Promise<string> {
-  const response = await fetch("http://localhost:5000/chat", {
+  const response = await fetch("https://neochat-backend-ftw5.onrender.com/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +25,7 @@ export async function sendMessageStream(
   message: string,
   onChunk: (chunk: string) => void
 ): Promise<void> {
-  const response = await fetch("http://localhost:5000/chat", {
+  const response = await fetch("https://neochat-backend-ftw5.onrender.com/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
