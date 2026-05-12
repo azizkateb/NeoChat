@@ -24,17 +24,29 @@ app.post("/chat", async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders?.();
-
     const stream = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-      stream: true,
-    });
+  model: "llama-3.3-70b-versatile",
+  messages: [
+    {
+      role: "system",
+      content: `
+You are a clean, modern chatbot inside an AI messenger app.
+
+Rules:
+- Keep responses short and clear
+- Do NOT ask unnecessary questions like "what's on your mind?"
+- Avoid long conversational fluff
+- Format text nicely and professionally
+- Be direct and helpful like ChatGPT
+`
+    },
+    {
+      role: "user",
+      content: message,
+    },
+  ],
+  stream: true,
+});
 
     const getChunkText = (chunk) => {
       if (!chunk || typeof chunk !== "object") return "";
